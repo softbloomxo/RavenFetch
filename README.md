@@ -18,7 +18,7 @@ RavenFetchは、`yt-dlp`を利用した学習用のシンプルなWindows向け�
 
 ```text
 ╭──────────────────────────────────────────────────────────╮
-│  RAVENFETCH  v0.2.1                                     │
+│  RAVENFETCH  v0.2.2                                     │
 │  PERSONAL MEDIA FETCHER                                 │
 ╰─────────────────────────────────────────────────────────╯
   保存先   C:\...\downloads
@@ -40,7 +40,7 @@ RavenFetchは、`yt-dlp`を利用した学習用のシンプルなWindows向け�
 
 ## 自動管理
 
-- RavenFetchは対話モード起動時に、新版を最大1日に1回確認します。
+- RavenFetchは通常の対話モード起動時に、毎回新版を確認します。
 - 新版の導入前に利用者へ確認します。
 - 更新対象は`RavenFetch.exe`のみです。
 - FFmpegとDenoは`%LOCALAPPDATA%\RavenFetch\runtime`で管理されます。

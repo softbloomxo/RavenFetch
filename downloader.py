@@ -11,7 +11,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 import zipfile
 from pathlib import Path
 from urllib.parse import urlparse
@@ -24,10 +23,9 @@ except ImportError as exc:
 
 
 APP_NAME = "RavenFetch"
-APP_VERSION = "0.2.1"
+APP_VERSION = "0.2.2"
 GITHUB_REPOSITORY = "softbloomxo/RavenFetch"
 UPDATE_ASSET_NAME = "RavenFetch.exe"
-UPDATE_CHECK_INTERVAL = 24 * 60 * 60
 USER_AGENT = f"{APP_NAME}/{APP_VERSION}"
 
 RUNTIME_RELEASES = {
@@ -211,10 +209,6 @@ def runtime_directory() -> Path:
     return state_directory() / "runtime"
 
 
-def update_cache_path() -> Path:
-    return state_directory() / "update-check.json"
-
-
 def github_latest_release(repository: str, timeout: int = 10) -> dict:
     request = Request(
         f"https://api.github.com/repos/{repository}/releases/latest",
@@ -263,25 +257,6 @@ def version_key(version: str) -> tuple[int, ...]:
     return tuple(numbers)
 
 
-def should_check_for_update(force: bool = False) -> bool:
-    if force:
-        return True
-    try:
-        cache = json.loads(update_cache_path().read_text(encoding="utf-8"))
-        return time.time() - float(cache.get("checked_at", 0)) >= UPDATE_CHECK_INTERVAL
-    except (OSError, ValueError, TypeError, json.JSONDecodeError):
-        return True
-
-
-def record_update_check() -> None:
-    try:
-        path = update_cache_path()
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({"checked_at": time.time()}), encoding="utf-8")
-    except OSError:
-        pass
-
-
 def launch_executable_update(new_executable: Path) -> None:
     helper = Path(tempfile.gettempdir()) / f"{APP_NAME}-update-{os.getpid()}.ps1"
     target = Path(sys.executable).resolve()
@@ -315,8 +290,6 @@ def launch_executable_update(new_executable: Path) -> None:
 
 
 def check_for_update(ui: UI, force: bool = False) -> bool:
-    if not should_check_for_update(force):
-        return False
     if sys.platform != "win32" or not getattr(sys, "frozen", False):
         if force:
             ui.warn("自動更新はWindows版RavenFetch.exeで利用できます。")
@@ -324,7 +297,6 @@ def check_for_update(ui: UI, force: bool = False) -> bool:
 
     try:
         release = github_latest_release(GITHUB_REPOSITORY)
-        record_update_check()
         latest = str(release.get("tag_name", "")).lstrip("vV")
         if not latest or version_key(latest) <= version_key(APP_VERSION):
             if force:
@@ -533,8 +505,12 @@ def download_video(url: str, output_dir: Path, ui: UI) -> bool:
         return False
 
 
-def interactive(ui: UI, output_dir: Path) -> int:
+def interactive(ui: UI, output_dir: Path, check_update: bool = True) -> int:
     ui.banner(output_dir)
+    if check_update:
+        ui.info("起動時の更新を確認しています…")
+        if check_for_update(ui, force=True):
+            return 0
     ui.warn("権利を保有するか、保存の許諾を得たメディアにのみ使用してください。")
     ui.info("URLを貼り付けてください。`:help`でコマンドを表示します。")
     while True:
@@ -598,10 +574,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     url = args.target or args.legacy_url
-    if not args.no_update_check and not url and check_for_update(ui):
-        return 0
     if not url:
-        return interactive(ui, args.output)
+        return interactive(ui, args.output, check_update=not args.no_update_check)
     ui.banner(args.output)
     success = list_formats(url, ui) if args.list_formats else download_video(url, args.output, ui)
     return 0 if success else 1

@@ -53,8 +53,8 @@ jobs:
           $hash = (Get-FileHash RavenFetch.exe -Algorithm SHA256).Hash.ToLowerInvariant()
           "$hash  RavenFetch.exe" | Set-Content RavenFetch.exe.sha256
           $version = python -c "import downloader; print(downloader.APP_VERSION)"
-          # v0.1.x clients expect this ZIP. Keep it through v0.2.1 migration.
-          if ($version -in @("0.2.0", "0.2.1")) {
+          # v0.1.x clients expect this ZIP. Keep it through v0.2.2 migration.
+          if ($version -in @("0.2.0", "0.2.1", "0.2.2")) {
             Compress-Archive -Path RavenFetch.exe -DestinationPath RavenFetch-Windows-x64.zip
           }
 

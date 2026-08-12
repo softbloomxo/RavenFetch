@@ -36,8 +36,8 @@ RavenFetch.exe --licenses
 
 ## Automatic management
 
-- RavenFetch checks for its own updates at most once every 24 hours in
-  interactive mode and asks before installing.
+- RavenFetch checks for its own updates whenever normal interactive mode starts
+  and asks before installing.
 - Updates replace only `RavenFetch.exe`.
 - FFmpeg and Deno are managed separately in the per-user runtime cache.
 - GitHub-provided SHA-256 asset digests are verified when available.
