@@ -26,7 +26,7 @@ except ImportError as exc:  # Friendly message also works in a frozen executable
 
 
 APP_NAME = "RAVENFETCH"
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.1.1"
 GITHUB_REPOSITORY = "softbloomxo/RavenFetch"
 UPDATE_ASSET_NAME = "RavenFetch-Windows-x64.zip"
 UPDATE_CHECK_INTERVAL = 24 * 60 * 60

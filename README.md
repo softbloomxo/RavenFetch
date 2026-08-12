@@ -1,34 +1,32 @@
 # RavenFetch
 
-RavenFetch is a small, educational Python front end for `yt-dlp`. It is intended
-for downloading media that you own, created yourself, or have explicit
-permission to download.
+[日本語](README.md) | [English](README.en.md)
+
+RavenFetchは、`yt-dlp`を利用した学習用のシンプルなメディア取得ツールです。
+自分で作成したメディア、自分が権利を保有するメディア、または保存の許諾を得たメディアのみを対象としています。
 
 > [!IMPORTANT]
-> Use RavenFetch only for content you are legally entitled to save. You are
-> responsible for complying with copyright law and the current terms of each
-> service. RavenFetch does not include DRM circumvention and is not affiliated
-> with or endorsed by any media service.
+> RavenFetchは、法的に保存できるコンテンツにのみ使用してください。著作権法と各サービスの最新の利用規約に従う責任は利用者にあります。RavenFetchはDRM回避機能を含まず、各メディアサービスの公式製品や提携製品ではありません。
 
-## Windows portable edition
+## Windowsポータブル版
 
-1. Download `RavenFetch-Windows-x64.zip` from the latest GitHub Release.
-2. Extract the complete ZIP into a writable folder.
-3. Run `RavenFetch.exe`.
-4. Paste a permitted media URL and press Enter.
+1. [GitHub Releases](https://github.com/softbloomxo/RavenFetch/releases/latest)から`RavenFetch-Windows-x64.zip`をダウンロードします。
+2. ZIP全体を書き込み可能なフォルダーへ展開します。
+3. `RavenFetch.exe`を実行します。
+4. 保存が許可されたメディURLを貼り付け、Enterキーを押します。
 
-Keep `RavenFetch.exe`, `deno.exe`, `ffmpeg.exe`, and `ffprobe.exe` together.
-Downloads are saved below `downloads/` by default.
+`RavenFetch.exe`、`deno.exe`、`ffmpeg.exe`、`ffprobe.exe`は同じフォルダーに置いてください。既定の保存先は`downloads/`です。
 
-RavenFetch checks GitHub Releases at most once every 24 hours when interactive
-mode starts. It asks before installing an update. You can also use:
+## 自動更新
+
+対話モードの起動時に、GitHub Releasesを最大1日に1回確認します。新版がある場合は、確認後にインストールします。
 
 ```powershell
 RavenFetch.exe --check-update
 RavenFetch.exe --no-update-check
 ```
 
-## Command-line examples
+## コマンドライン例
 
 ```powershell
 RavenFetch.exe "https://example.com/your-permitted-media"
@@ -36,7 +34,7 @@ RavenFetch.exe -o "D:\Videos" "URL"
 RavenFetch.exe -F "URL"
 ```
 
-## Development
+## 開発
 
 ```powershell
 python -m venv .venv
@@ -44,17 +42,11 @@ python -m venv .venv
 .venv\Scripts\python downloader.py
 ```
 
-Pushing a tag such as `v0.1.0` runs the GitHub Actions release workflow. It
-builds the Windows executable, obtains Deno and the GPLv3 FFmpeg build from
-their upstream release pages, and publishes the portable ZIP to GitHub
-Releases.
+`v0.1.1`のようなタグをpushすると、GitHub ActionsがWindows版を自動ビルドし、ポータブルZIPをGitHub Releasesへ公開します。
 
-When changing the version, update `APP_VERSION` in `downloader.py`, commit it,
-and create a matching `vX.Y.Z` tag.
+バージョン更新時は、`downloader.py`の`APP_VERSION`を変更し、同じ番号の`vX.Y.Z`タグを作成してください。
 
-## License
+## ライセンス
 
-RavenFetch source code is available under the [MIT License](LICENSE). Bundled
-dependencies retain their respective licenses; see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+RavenFetchのソースコードは[MIT License](LICENSE)で公開しています。同梱コンポーネントにはそれぞれのライセンスが適用されます。詳細は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
 
