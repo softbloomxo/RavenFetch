@@ -1,4 +1,4 @@
-name: Build and publish Windows release
+name: Build and publish single-file Windows release
 
 on:
   push:
@@ -32,40 +32,31 @@ jobs:
         run: python -m pip install --upgrade pip pyinstaller -r requirements.txt
 
       - name: Validate source
+        shell: pwsh
         run: |
           python -m py_compile downloader.py
           python downloader.py --version
+          $version = python -c "import downloader; print(downloader.APP_VERSION)"
+          $releaseTag = if ("${{ github.event_name }}" -eq "workflow_dispatch") { "${{ inputs.release_tag }}" } else { "${{ github.ref_name }}" }
+          if ($releaseTag -ne "v$version") { throw "Tag $releaseTag does not match APP_VERSION $version" }
 
       - name: Build RavenFetch
         run: >-
           pyinstaller --noconfirm --clean --onefile --console
           --name RavenFetch --collect-all yt_dlp downloader.py
 
-      - name: Download portable runtimes
+      - name: Prepare release files
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          New-Item -ItemType Directory -Path package | Out-Null
-          Copy-Item dist/RavenFetch.exe package/
-          Copy-Item README.md,README.en.md,LICENSE,THIRD_PARTY_NOTICES.md package/
-
-          Invoke-WebRequest -Uri "https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip" -OutFile deno.zip
-          Expand-Archive -LiteralPath deno.zip -DestinationPath deno-package
-          Copy-Item deno-package/deno.exe package/
-
-          Invoke-WebRequest -Uri "https://github.com/yt-dlp/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip" -OutFile ffmpeg.zip
-          Expand-Archive -LiteralPath ffmpeg.zip -DestinationPath ffmpeg-package
-          $ffmpeg = Get-ChildItem ffmpeg-package -Recurse -Filter ffmpeg.exe | Select-Object -First 1
-          $ffprobe = Get-ChildItem ffmpeg-package -Recurse -Filter ffprobe.exe | Select-Object -First 1
-          if (-not $ffmpeg -or -not $ffprobe) { throw "FFmpeg executables were not found." }
-          Copy-Item $ffmpeg.FullName package/ffmpeg.exe
-          Copy-Item $ffprobe.FullName package/ffprobe.exe
-          Invoke-WebRequest -Uri "https://www.gnu.org/licenses/gpl-3.0.txt" -OutFile package/COPYING.GPLv3.txt
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/denoland/deno/main/LICENSE.md" -OutFile package/DENO-LICENSE.txt
-
-          Compress-Archive -Path package/* -DestinationPath RavenFetch-Windows-x64.zip
-          $hash = (Get-FileHash RavenFetch-Windows-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  RavenFetch-Windows-x64.zip" | Set-Content RavenFetch-Windows-x64.zip.sha256
+          Copy-Item dist/RavenFetch.exe RavenFetch.exe
+          $hash = (Get-FileHash RavenFetch.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  RavenFetch.exe" | Set-Content RavenFetch.exe.sha256
+          $version = python -c "import downloader; print(downloader.APP_VERSION)"
+          # v0.1.x clients expect this ZIP. Keep it only for the v0.2.0 migration.
+          if ($version -eq "0.2.0") {
+            Compress-Archive -Path RavenFetch.exe -DestinationPath RavenFetch-Windows-x64.zip
+          }
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
@@ -74,5 +65,4 @@ jobs:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
           generate_release_notes: true
           files: |
-            RavenFetch-Windows-x64.zip
-            RavenFetch-Windows-x64.zip.sha256
+            RavenFetch*

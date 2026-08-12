@@ -2,39 +2,63 @@
 
 [日本語](README.md) | [English](README.en.md)
 
-RavenFetchは、`yt-dlp`を利用した学習用のシンプルなメディア取得ツールです。
-自分で作成したメディア、自分が権利を保有するメディア、または保存の許諾を得たメディアのみを対象としています。
+RavenFetchは、`yt-dlp`を利用した学習用のシンプルなWindows向けメディア取得ツールです。
+配布ファイルは`RavenFetch.exe`の1つだけです。
 
 > [!IMPORTANT]
-> RavenFetchは、法的に保存できるコンテンツにのみ使用してください。著作権法と各サービスの最新の利用規約に従う責任は利用者にあります。RavenFetchはDRM回避機能を含まず、各メディアサービスの公式製品や提携製品ではありません。
+> 自分で作成したメディア、自分が権利を保有するメディア、または保存の許諾を得たメディアにのみ使用してください。著作権法と各サービスの最新の利用規約に従う責任は利用者にあります。RavenFetchはDRM回避機能を含まず、各メディアサービスの公式製品や提携製品ではありません。
 
-## Windowsポータブル版
+## 使い方
 
-1. [GitHub Releases](https://github.com/softbloomxo/RavenFetch/releases/latest)から`RavenFetch-Windows-x64.zip`をダウンロードします。
-2. ZIP全体を書き込み可能なフォルダーへ展開します。
-3. `RavenFetch.exe`を実行します。
-4. 保存が許可されたメディURLを貼り付け、Enterキーを押します。
+1. [GitHub Releases](https://github.com/softbloomxo/RavenFetch/releases/latest)から`RavenFetch.exe`をダウンロードします。
+2. 書き込み可能なフォルダーへ置いて実行します。
+3. 保存が許可されたメディアURLを貼り付け、Enterキーを押します。
 
-`RavenFetch.exe`、`deno.exe`、`ffmpeg.exe`、`ffprobe.exe`は同じフォルダーに置いてください。既定の保存先は`downloads/`です。
+既定の保存先は`downloads/`です。高品質な保存に必要なFFmpegとDenoは、必要になった初回だけ公式GitHub Releasesから自動的に準備されます。
 
-## 自動更新
+```text
+╭──────────────────────────────────────────────────────────╮
+│  RAVENFETCH  v0.2.0                                     │
+│  PERSONAL MEDIA FETCHER                                 │
+╰─────────────────────────────────────────────────────────╯
+  保存先   C:\...\downloads
+  ●  URLを貼り付けてください。`:help`でコマンドを表示します。
 
-対話モードの起動時に、GitHub Releasesを最大1日に1回確認します。新版がある場合は、確認後にインストールします。
-
-```powershell
-RavenFetch.exe --check-update
-RavenFetch.exe --no-update-check
+  ❯
 ```
 
-## コマンドライン例
+## 対話コマンド
+
+| コマンド | 動作 |
+|---|---|
+| URL | メディアを保存 |
+| `:status` | FFmpegとDenoの状態を表示 |
+| `:setup` | 必要なランタイムを事前準備 |
+| `:update` | RavenFetchの更新をすぐ確認 |
+| `:help` | ヘルプを表示 |
+| `:quit` | 終了 |
+
+## 自動管理
+
+- RavenFetchは対話モード起動時に、新版を最大1日に1回確認します。
+- 新版の導入前に利用者へ確認します。
+- 更新対象は`RavenFetch.exe`のみです。
+- FFmpegとDenoは`%LOCALAPPDATA%\RavenFetch\runtime`で管理されます。
+- Releaseと外部ランタイムはSHA-256ダイジェストが提供される場合に検証します。
+
+## コマンドライン
 
 ```powershell
 RavenFetch.exe "https://example.com/your-permitted-media"
 RavenFetch.exe -o "D:\Videos" "URL"
 RavenFetch.exe -F "URL"
+RavenFetch.exe --check-update
+RavenFetch.exe --setup-runtime
+RavenFetch.exe --runtime-status
+RavenFetch.exe --licenses
 ```
 
-## 開発
+## 開発とRelease
 
 ```powershell
 python -m venv .venv
@@ -42,11 +66,9 @@ python -m venv .venv
 .venv\Scripts\python downloader.py
 ```
 
-`v0.1.1`のようなタグをpushすると、GitHub ActionsがWindows版を自動ビルドし、ポータブルZIPをGitHub Releasesへ公開します。
-
-バージョン更新時は、`downloader.py`の`APP_VERSION`を変更し、同じ番号の`vX.Y.Z`タグを作成してください。
+`downloader.py`の`APP_VERSION`を更新し、同じ番号の`vX.Y.Z`タグをpushすると、GitHub Actionsが単一の`RavenFetch.exe`を自動公開します。タグとコードのバージョンが異なる場合は、誤配布を避けるためビルドが停止します。
 
 ## ライセンス
 
-RavenFetchのソースコードは[MIT License](LICENSE)で公開しています。同梱コンポーネントにはそれぞれのライセンスが適用されます。詳細は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
+RavenFetchのソースコードは[MIT License](LICENSE)で公開しています。第三者コンポーネントはそれぞれのライセンスに従います。実行ファイルでは`RavenFetch.exe --licenses`で確認できます。
 

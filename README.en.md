@@ -2,43 +2,47 @@
 
 [Japanese](README.md) | [English](README.en.md)
 
-RavenFetch is a small, educational Python front end for `yt-dlp`. It is intended
-for downloading media that you own, created yourself, or have explicit
-permission to download.
+RavenFetch is a compact educational media fetcher for Windows powered by
+`yt-dlp`. The release contains just one file: `RavenFetch.exe`.
 
 > [!IMPORTANT]
-> Use RavenFetch only for content you are legally entitled to save. You are
-> responsible for complying with copyright law and the current terms of each
-> service. RavenFetch does not include DRM circumvention and is not affiliated
-> with or endorsed by any media service.
+> Use RavenFetch only for media that you created, own, or have explicit
+> permission to save. You are responsible for complying with copyright law and
+> each service's current terms. RavenFetch does not circumvent DRM and is not
+> affiliated with or endorsed by any media service.
 
-## Windows portable edition
+## Usage
 
-1. Download `RavenFetch-Windows-x64.zip` from the [latest GitHub Release](https://github.com/softbloomxo/RavenFetch/releases/latest).
-2. Extract the complete ZIP into a writable folder.
-3. Run `RavenFetch.exe`.
-4. Paste a permitted media URL and press Enter.
+1. Download `RavenFetch.exe` from the [latest release](https://github.com/softbloomxo/RavenFetch/releases/latest).
+2. Place it in a writable folder and run it.
+3. Paste the URL of permitted media and press Enter.
 
-Keep `RavenFetch.exe`, `deno.exe`, `ffmpeg.exe`, and `ffprobe.exe` together.
-Downloads are saved below `downloads/` by default.
+FFmpeg and Deno are obtained from their official GitHub Releases only when
+first needed. RavenFetch manages them under
+`%LOCALAPPDATA%\RavenFetch\runtime`, keeping the application folder clean.
 
-RavenFetch checks GitHub Releases at most once every 24 hours when interactive
-mode starts. It asks before installing an update. You can also use:
-
-```powershell
-RavenFetch.exe --check-update
-RavenFetch.exe --no-update-check
-```
-
-## Command-line examples
+Interactive commands include `:status`, `:setup`, `:update`, `:help`, and
+`:quit`. Command-line usage:
 
 ```powershell
 RavenFetch.exe "https://example.com/your-permitted-media"
 RavenFetch.exe -o "D:\Videos" "URL"
 RavenFetch.exe -F "URL"
+RavenFetch.exe --check-update
+RavenFetch.exe --setup-runtime
+RavenFetch.exe --runtime-status
+RavenFetch.exe --licenses
 ```
 
-## Development
+## Automatic management
+
+- RavenFetch checks for its own updates at most once every 24 hours in
+  interactive mode and asks before installing.
+- Updates replace only `RavenFetch.exe`.
+- FFmpeg and Deno are managed separately in the per-user runtime cache.
+- GitHub-provided SHA-256 asset digests are verified when available.
+
+## Development and releases
 
 ```powershell
 python -m venv .venv
@@ -46,14 +50,11 @@ python -m venv .venv
 .venv\Scripts\python downloader.py
 ```
 
-Pushing a tag such as `v0.1.1` runs the GitHub Actions release workflow. It
-builds the Windows executable and publishes the portable ZIP to GitHub Releases.
-
-When changing the version, update `APP_VERSION` in `downloader.py`, commit it,
-and create a matching `vX.Y.Z` tag.
+Update `APP_VERSION` in `downloader.py`, then push the matching `vX.Y.Z` tag.
+GitHub Actions validates that the versions match and publishes the single EXE.
 
 ## License
 
-RavenFetch source code is available under the [MIT License](LICENSE). Bundled
-dependencies retain their respective licenses; see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+RavenFetch source is available under the [MIT License](LICENSE). Third-party
+components retain their respective licenses. In the executable, run
+`RavenFetch.exe --licenses` to display notices.
