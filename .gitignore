@@ -11,4 +11,5 @@ downloads/
 *.sha256
 .idea/
 .vscode/
-
+*_non-public*.md
+*_非公開*.md
