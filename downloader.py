@@ -24,7 +24,7 @@ except ImportError as exc:
 
 
 APP_NAME = "RavenFetch"
-APP_VERSION = "0.2.0"
+APP_VERSION = "0.2.1"
 GITHUB_REPOSITORY = "softbloomxo/RavenFetch"
 UPDATE_ASSET_NAME = "RavenFetch.exe"
 UPDATE_CHECK_INTERVAL = 24 * 60 * 60

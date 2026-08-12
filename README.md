@@ -18,7 +18,7 @@ RavenFetchは、`yt-dlp`を利用した学習用のシンプルなWindows向け�
 
 ```text
 ╭──────────────────────────────────────────────────────────╮
-│  RAVENFETCH  v0.2.0                                     │
+│  RAVENFETCH  v0.2.1                                     │
 │  PERSONAL MEDIA FETCHER                                 │
 ╰─────────────────────────────────────────────────────────╯
   保存先   C:\...\downloads
@@ -71,4 +71,3 @@ python -m venv .venv
 ## ライセンス
 
 RavenFetchのソースコードは[MIT License](LICENSE)で公開しています。第三者コンポーネントはそれぞれのライセンスに従います。実行ファイルでは`RavenFetch.exe --licenses`で確認できます。
-
